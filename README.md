@@ -28,7 +28,24 @@ sample_data/ transparently-labeled demo soil profiles
 
 ## Running locally
 
-Not yet runnable end-to-end — see `STATUS.md` for current phase. Setup instructions will be added here as each phase lands (frontend dev server, backend uvicorn command, env vars).
+Backend (FastAPI, port 8000):
+```
+cd backend
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+```
+
+Frontend (Vite dev server, port 5173):
+```
+cd frontend
+npm install
+npm run dev
+```
+
+Visit http://localhost:5173 — the Home page's "Backend connection" card confirms the frontend can reach the backend's `/health` endpoint.
+
+**Note on Python 3.14:** if you're on a very new Python, `pydantic-core` needs a Rust toolchain to build from source (no prebuilt wheel yet for brand-new interpreter versions) — run `rustup default stable` once if `pip install` fails with a Cargo/PyO3 error.
 
 ## Scientific ground rules (non-negotiable)
 

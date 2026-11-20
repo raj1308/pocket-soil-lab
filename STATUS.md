@@ -10,11 +10,23 @@ Only check an item once it is implemented AND verified running (not just coded).
 - [x] Repo skeleton created
 
 ## Phase 1 — Application Skeleton
-- [ ] React + Vite + TS + Tailwind frontend scaffolded
-- [ ] FastAPI backend scaffolded with /health
-- [ ] SQLite DB + models initialized
-- [ ] 5-tab navigation shell (Home, Soil Analysis, Crop Advisor, Weather, Reports)
-- [ ] Frontend ↔ backend integration verified end-to-end locally
+- [x] React + Vite + TS + Tailwind frontend scaffolded (hand-written, not `create-vite`, since the interactive scaffolder couldn't run non-interactively against the pre-existing folder layout)
+- [x] FastAPI backend scaffolded with /health and /api/version — verified with `curl`
+- [x] SQLite DB + SQLAlchemy session/Base initialized (no models yet — added as each phase needs them)
+- [x] 5-tab navigation shell (Home, Soil Analysis, Crop Advisor, Weather, Reports) — other 4 tabs are explicit placeholders naming their phase, not fake content
+- [x] Frontend ↔ backend integration verified end-to-end locally — Home page's "Backend connection" card fetches `/health` live; confirmed via `tsc --noEmit`, `vite build`, and curl with `Origin: http://localhost:5173` showing correct CORS headers
+
+**Environment note:** this machine runs Python 3.14 (very new). `pydantic-core` pinned to 2.23.4 doesn't support it at all (hard PyO3 version floor) and `numpy`/`pandas`/`scikit-learn` had no prebuilt wheels yet, so `backend/requirements.txt` uses `>=` floors instead of exact pins, and a Rust toolchain (`rustup default stable`) was configured for `pydantic-core`'s source build. If you ever `pip install` from scratch again expect a slower first install while Rust compiles `pydantic-core`.
+
+**To run it yourself:**
+```
+# backend (from backend/)
+source .venv/bin/activate && uvicorn app.main:app --reload --port 8000
+
+# frontend (from frontend/)
+npm run dev
+```
+Both are currently running in the background from this session (backend :8000, frontend :5173) — visit http://localhost:5173 to see it live.
 
 ## Phase 2 — Weather Integration
 - [ ] Location selection (GPS / manual / search)
