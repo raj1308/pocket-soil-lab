@@ -3,9 +3,9 @@
 Only check an item once it is implemented AND verified running (not just coded). This file is the source of truth for "what's actually done" — update it at the end of every work session.
 
 ## Phase 0 — Feasibility & Planning
-- [ ] Lecture slides / syllabus / evaluation criteria reviewed (**waiting on upload**)
-- [ ] Traceability table (lecture concept → feature) completed
-- [ ] Dataset feasibility confirmed (candidate: OSSL — not yet inspected)
+- [x] Lecture slides / syllabus reviewed — `docs/course-material-digest.md` (AG20103/AG20201 Soil Technology, IIT Kharagpur, S. Chakraborty). No formal software-project brief or grading rubric exists in any supplied file — confirmed self-directed, pending final user confirmation.
+- [x] Traceability table (lecture concept → feature) drafted — see digest §2
+- [ ] Dataset feasibility confirmed (candidate: OSSL — not yet inspected; local course lab files are real but far too small to train on, max 1-2 soil samples)
 - [x] Initial architecture decided (provisional — may change after slides review)
 - [x] Repo skeleton created
 
@@ -67,3 +67,13 @@ Only check an item once it is implemented AND verified running (not just coded).
 **Known provisional decisions (may change once lecture materials are reviewed):**
 - Target region: India; initial crop set: rice, wheat, maize, potato, mustard, groundnut, chickpea, pigeon pea, green gram, soybean (per master prompt default — not yet cross-checked against any syllabus-mandated region/crop list).
 - ML dataset: OSSL assumed likely candidate — not yet actually downloaded/inspected. No dataset facts (sample counts, wavelength ranges, licence) should be treated as confirmed until Phase 5 does real inspection.
+
+**Decisions locked in from course material review (`docs/course-material-digest.md`):**
+- RandomForestRegressor set with `max_features=1/3` explicitly (mirrors the course's taught `mtry=M/3` for regression, not sklearn's current all-features default) + `oob_score=True` reported alongside held-out test R²/RMSE, per the course's CART/RF deck.
+- Model comparison includes a plain `DecisionTreeRegressor` (CART) row so the RF/ensemble improvement is visible, per the same deck.
+- ExtraTrees/HistGradientBoosting are explicitly flagged in the ML report as "beyond the syllabus" additions, not taught in this course.
+- Published pXRF→soil-property R² benchmarks from the course's Soil Sensor Part 2 deck (0.42-0.58 for available-P/Ca, 0.83-0.90 for EC/pH) are cited as the real-world bar a project model should be compared against when deciding whether to mark a target "deployable."
+- Manual soil-entry "measurement method" fields use real method names from the course's Soil Chemistry Manual: Olsen's method (NaHCO₃ extraction, molybdenum-blue colorimetry ~720nm) for available P, Walkley-Black for organic carbon, ammonium acetate/flame photometry for available K, alkaline KMnO₄ distillation for available N.
+- Weather-vs-climate distinction (7-day forecast ≠ growing-season climate, already mandated by the master spec) is explicitly grounded in Jenny's equation of soil formation (soil = f(climate, organisms, relief, parent material, time)), which the course's own exams test.
+- USDA sand/silt/clay mm boundaries from the course's Weathering deck used for texture validation (sum ≈ 100%) and texture-class labeling.
+- Real single-sample instrument files from the user's own lab exercise (`/home/raj/Documents/Soil Tech/P Standard.csv`, `FTIR.csv`, `Spectroradiometer.xlsx`, `pXRF.pdf`, `grp 5.pdf`) are planned as genuinely-real "demo sample" profiles (Part 5 Mode 4) with correct provenance (sensor/lab measured, not "demonstration data") — stronger than fabricating synthetic demo profiles. None of these are usable for ML training (too few samples).
