@@ -1,3 +1,4 @@
+import asyncio
 from datetime import datetime, timezone
 from typing import Any
 
@@ -14,6 +15,32 @@ from app.schemas.weather import (
 )
 
 CACHE_TTL_SECONDS = 15 * 60
+
+# Open-Meteo's free tier rate-limits by source IP, and Render's free tier shares
+# outbound IPs across many unrelated apps -- so a 429 here is often shared-tenant
+# congestion rather than this app's own traffic. A short retry-with-backoff gives
+# that congestion a chance to clear within one request instead of failing immediately.
+_RETRYABLE_STATUS_CODES = {429, 502, 503, 504}
+_RETRY_DELAYS_SECONDS = (1.0, 2.5, 5.0)
+
+
+async def _get_with_retry(client: httpx.AsyncClient, url: str, params: dict[str, Any]) -> httpx.Response:
+    last_exc: httpx.HTTPError | None = None
+    for attempt, delay in enumerate((0.0, *_RETRY_DELAYS_SECONDS)):
+        if delay:
+            await asyncio.sleep(delay)
+        try:
+            resp = await client.get(url, params=params)
+            resp.raise_for_status()
+            return resp
+        except httpx.HTTPStatusError as exc:
+            last_exc = exc
+            if exc.response.status_code not in _RETRYABLE_STATUS_CODES:
+                raise
+        except httpx.HTTPError as exc:
+            last_exc = exc
+    assert last_exc is not None
+    raise last_exc
 
 # In-memory cache keyed by rounded (lat, lon) — adequate for a single-process dev/demo
 # deployment; a multi-worker production deployment would need a shared cache (e.g. Redis)
@@ -33,8 +60,7 @@ async def geocode(query: str, count: int = 5) -> list[GeocodeResult]:
     params = {"name": query, "count": count, "language": "en", "format": "json"}
     async with httpx.AsyncClient(timeout=10.0) as client:
         try:
-            resp = await client.get(f"{settings.open_meteo_geocoding_url}/search", params=params)
-            resp.raise_for_status()
+            resp = await _get_with_retry(client, f"{settings.open_meteo_geocoding_url}/search", params)
         except httpx.HTTPError as exc:
             raise WeatherServiceError(f"Geocoding request failed: {exc}") from exc
     payload = resp.json()
@@ -151,8 +177,7 @@ async def get_forecast(lat: float, lon: float) -> ForecastResponse:
     }
     async with httpx.AsyncClient(timeout=10.0) as client:
         try:
-            resp = await client.get(f"{settings.open_meteo_base_url}/forecast", params=params)
-            resp.raise_for_status()
+            resp = await _get_with_retry(client, f"{settings.open_meteo_base_url}/forecast", params)
         except httpx.HTTPError as exc:
             if cached:
                 stale = cached["response"].model_copy(update={"is_cached": True})
