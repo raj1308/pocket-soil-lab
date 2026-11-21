@@ -1,0 +1,27 @@
+# Render blueprint for the FastAPI backend (https://render.com/docs/blueprint-spec).
+# Deploy: push this repo to GitHub, then in Render dashboard "New +" -> "Blueprint",
+# point it at the repo. Render reads this file and provisions the service below.
+#
+# Free tier notes (verified Nov 2026, see docs/deployment-guide.md for sources):
+# - 750 free instance-hours/month, no credit card required.
+# - Free web services sleep after 15 min of no traffic; the next request wakes it
+#   (cold start, a few seconds) -- fine for a demo/viva, not for 24/7 uptime.
+# - Free tier has NO persistent disk, so the SQLite file resets on every deploy
+#   and possibly on sleep/wake. Acceptable for this project's demo data (which
+#   reseeds via /api/soil/demo/{key} on demand); for anything needing durable
+#   storage, attach Render's free Postgres instead (expires after 30 days on the
+#   free tier) and change DATABASE_URL accordingly -- the backend's DB layer
+#   (app/database/session.py) already works with either via one env var.
+services:
+  - type: web
+    name: pocket-soil-lab-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: CORS_ORIGINS
+        sync: false # set this to your deployed frontend's URL after it's live
+      - key: DATABASE_URL
+        value: sqlite:///./pocket_soil_lab.db
