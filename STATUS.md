@@ -70,8 +70,9 @@ Both are currently running in the background from this session (backend :8000, f
 - [ ] Explicit limitations statement shown (no fake NPK/pH)
 
 ## Phase 8 — Reports & History
-- [ ] Saved reports + comparison
-- [ ] PDF export
+- [x] Saved reports list (all persisted soil samples, demo and manual) + sample-to-sample comparison (select up to 2, renders side-by-side on wider screens)
+- [x] PDF export via the browser's native print-to-PDF (`window.print()` + a print stylesheet that hides nav/chrome) — a genuinely real, working "save as PDF" with no extra server dependency, labeled accurately as "Print / Save as PDF" rather than implying an automatic download
+- [x] Verified with Playwright: comparison view renders both samples' full measurement tables correctly, zero console errors
 
 ## Phase 9 — PWA & Deployment
 - [x] Manifest (hand-written `public/manifest.json`), hand-drawn SVG icon rendered to PNG (192/512/apple-touch) via `rsvg-convert`
