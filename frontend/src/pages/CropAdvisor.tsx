@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ApiError, recommendCrops } from '../services/api'
 import { CropCard } from '../components/CropCard'
+import { FertilizerCalculator } from '../components/FertilizerCalculator'
 import { loadLastSample } from '../utils/storage'
 import { measurementValue } from '../types/soil'
 import type { CropRecommendationResponse } from '../types/crops'
@@ -127,6 +128,7 @@ export function CropAdvisor() {
             <CropCard key={crop.key} crop={crop} rank={i + 1} />
           ))}
           <p className="text-xs text-soil-500">{result.disclaimer}</p>
+          <FertilizerCalculator sample={sample} recommendations={result.recommendations} />
         </div>
       )}
     </div>

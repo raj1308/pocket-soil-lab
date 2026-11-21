@@ -2,6 +2,7 @@ import type { HealthResponse } from '../types'
 import type { ForecastResponse, GeocodeResult } from '../types/weather'
 import type { DemoProfileSummary, ManualSoilEntry, SoilSample } from '../types/soil'
 import type { CropRecommendationRequest, CropRecommendationResponse } from '../types/crops'
+import type { FertilizerRequest, FertilizerResponse } from '../types/fertilizer'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000'
 
@@ -73,4 +74,8 @@ export function recommendCrops(
   req: CropRecommendationRequest,
 ): Promise<CropRecommendationResponse> {
   return postJson<CropRecommendationResponse>('/api/crops/recommend', req)
+}
+
+export function recommendFertilizer(req: FertilizerRequest): Promise<FertilizerResponse> {
+  return postJson<FertilizerResponse>('/api/fertilizer/recommend', req)
 }

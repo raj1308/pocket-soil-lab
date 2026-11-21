@@ -58,9 +58,11 @@ Both are currently running in the background from this session (backend :8000, f
 - [ ] Model + pipeline serialized, exposed via backend endpoint
 
 ## Phase 6 — Fertilizer Calculations
-- [ ] Unit conversion + dosage functions (tested)
-- [ ] "Insufficient validated data" guardrail wired in
-- [ ] Cost comparison (sourced prices, dated)
+- [x] Unit conversion + dosage functions (tested) — `backend/app/services/fertilizer.py`: ha↔acres, N-P2O5-K2O → Urea/DAP/MOP with correct DAP-nitrogen-credit (no double counting), 31 pytest cases covering fertilizer+soil+crop modules, all passing (`backend/tests/`)
+- [x] "Insufficient validated data" guardrail wired in — exact master-spec message returned (and shown in UI) whenever N/P/K aren't all present; verified via test and live UI
+- [x] Cost comparison — only computed when user supplies all 3 prices, otherwise explicitly omitted with an assumption note; prices are user-entered, never fabricated
+- [x] Generic crop N-P2O5-K2O requirements + Low/Medium/High fertility-based adjustment, clearly labeled as a simplified teaching heuristic, not an official state package of practices
+- [x] Verified end-to-end with Playwright (clay-rich demo sample → crop pick → fertilizer dose), zero console errors
 
 ## Phase 7 — Camera Observation
 - [ ] Capture/upload/crop UI
