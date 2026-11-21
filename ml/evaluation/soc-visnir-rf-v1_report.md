@@ -23,6 +23,7 @@ Chosen model: **hist_gradient_boosting**
 | Model | MAE | RMSE | R² | OOB R² (log target) |
 |---|---|---|---|---|
 | dummy_mean | 5.938 | 13.139 | -0.099 | — |
+| decision_tree_cart | 2.235 | 4.845 | 0.851 | — |
 | pls | 2.214 | 5.368 | 0.817 | — |
 | random_forest | 1.588 | 3.465 | 0.924 | 0.907 |
 | extra_trees | 1.525 | 3.324 | 0.930 | — |
