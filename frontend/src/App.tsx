@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import { NavBar } from './components/NavBar'
 import { Home } from './pages/Home'
+import { Weather } from './pages/Weather'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 
 export function App() {
@@ -16,10 +17,7 @@ export function App() {
           path="/crops"
           element={<PlaceholderPage title="Crop Advisor" phase="Phase 4" />}
         />
-        <Route
-          path="/weather"
-          element={<PlaceholderPage title="Weather" phase="Phase 2" />}
-        />
+        <Route path="/weather" element={<Weather />} />
         <Route
           path="/reports"
           element={<PlaceholderPage title="Reports" phase="Phase 8" />}

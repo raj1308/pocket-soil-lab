@@ -1,4 +1,5 @@
 import type { HealthResponse } from '../types'
+import type { ForecastResponse, GeocodeResult } from '../types/weather'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000'
 
@@ -19,4 +20,14 @@ async function request<T>(path: string): Promise<T> {
 
 export function getHealth(): Promise<HealthResponse> {
   return request<HealthResponse>('/health')
+}
+
+export function searchLocation(query: string): Promise<GeocodeResult[]> {
+  return request<GeocodeResult[]>(`/api/weather/geocode?q=${encodeURIComponent(query)}`)
+}
+
+export function getForecast(latitude: number, longitude: number): Promise<ForecastResponse> {
+  return request<ForecastResponse>(
+    `/api/weather/forecast?latitude=${latitude}&longitude=${longitude}`,
+  )
 }

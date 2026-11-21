@@ -29,10 +29,12 @@ npm run dev
 Both are currently running in the background from this session (backend :8000, frontend :5173) — visit http://localhost:5173 to see it live.
 
 ## Phase 2 — Weather Integration
-- [ ] Location selection (GPS / manual / search)
-- [ ] Real Open-Meteo forecast call verified with actual response
-- [ ] Weather dashboard + graphs
-- [ ] Error/timeout/offline handling
+- [x] Location selection (GPS via browser Geolocation API / manual city search via Open-Meteo geocoding)
+- [x] Real Open-Meteo forecast call verified with actual response (current + 7-day daily + 168h hourly, Kharagpur test data)
+- [x] Weather dashboard + graphs — current conditions, 7-day list, temperature area chart + rainfall-probability bar chart (Recharts, single-axis each, dataviz-skill-informed: blue/orange sequential hues, no dual-axis, tooltips, recessive gridlines)
+- [x] Error/timeout/offline handling — 15-min in-memory backend cache (verified via `is_cached` flag), localStorage frontend fallback cache with a visible "showing cached forecast" banner on backend failure, last-updated timestamp shown
+- [x] Conservative rule-based farming advisories (heavy rain, heat stress, waterlogging, fertilizer-timing caution) — thresholds documented in `backend/app/services/weather.py`
+- [x] Verified end-to-end in a real headless browser (Playwright): searched "Kharagpur", selected a result, confirmed real temperature/advisories render with zero console errors; caught and fixed a clipped-Y-axis chart bug this way before calling it done
 
 ## Phase 3 — Soil Data Workflow
 - [ ] Manual entry form + validation
