@@ -10,6 +10,6 @@ __pycache__/
 venv/
 ml/data/raw/*
 !ml/data/raw/.gitkeep
-ml/artifacts/*
-!ml/artifacts/.gitkeep
+# ml/artifacts/ IS tracked — trained model + metadata are small (a few MB) and are
+# exactly the "at least one evaluated soil ML model" deliverable this project needs.
 .DS_Store

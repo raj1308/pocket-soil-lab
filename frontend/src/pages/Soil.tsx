@@ -9,10 +9,11 @@ import {
 import { ManualSoilForm } from '../components/ManualSoilForm'
 import { SoilSampleResult } from '../components/SoilSampleResult'
 import { CameraObservation } from '../components/CameraObservation'
+import { SpectralUpload } from '../components/SpectralUpload'
 import { saveLastSample } from '../utils/storage'
 import type { DemoProfileSummary, ManualSoilEntry, SoilSample } from '../types/soil'
 
-type Tab = 'demo' | 'manual' | 'camera'
+type Tab = 'demo' | 'manual' | 'camera' | 'spectral'
 
 export function Soil() {
   const [tab, setTab] = useState<Tab>('demo')
@@ -64,30 +65,38 @@ export function Soil() {
         <p className="text-sm text-soil-500">Enter a lab result, or try a demo sample</p>
       </header>
 
-      <div className="flex gap-2">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         <button
           onClick={() => setTab('demo')}
-          className={`flex-1 rounded-md py-2 text-sm font-medium ${
+          className={`rounded-md py-2 text-sm font-medium ${
             tab === 'demo' ? 'bg-leaf-600 text-white' : 'border border-soil-100 text-soil-700'
           }`}
         >
-          Demo samples
+          Demo
         </button>
         <button
           onClick={() => setTab('manual')}
-          className={`flex-1 rounded-md py-2 text-sm font-medium ${
+          className={`rounded-md py-2 text-sm font-medium ${
             tab === 'manual' ? 'bg-leaf-600 text-white' : 'border border-soil-100 text-soil-700'
           }`}
         >
-          Manual entry
+          Manual
         </button>
         <button
           onClick={() => setTab('camera')}
-          className={`flex-1 rounded-md py-2 text-sm font-medium ${
+          className={`rounded-md py-2 text-sm font-medium ${
             tab === 'camera' ? 'bg-leaf-600 text-white' : 'border border-soil-100 text-soil-700'
           }`}
         >
           Camera
+        </button>
+        <button
+          onClick={() => setTab('spectral')}
+          className={`rounded-md py-2 text-sm font-medium ${
+            tab === 'spectral' ? 'bg-leaf-600 text-white' : 'border border-soil-100 text-soil-700'
+          }`}
+        >
+          Spectral
         </button>
       </div>
 
@@ -123,6 +132,8 @@ export function Soil() {
       )}
 
       {tab === 'camera' && <CameraObservation />}
+
+      {tab === 'spectral' && <SpectralUpload />}
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 

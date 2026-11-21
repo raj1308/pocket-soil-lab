@@ -51,11 +51,15 @@ Both are currently running in the background from this session (backend :8000, f
 - [x] Verified end-to-end with Playwright: soil sample → crop recommendations, zero console errors, scores/reasons/limiting-factors all traceable to the actual inputs
 
 ## Phase 5 — Soil ML Model
-- [ ] Dataset downloaded/inspected (real inspection, not assumed)
-- [ ] Preprocessing pipeline (train-only fitting, no leakage)
-- [ ] Baseline vs PLS vs RF vs ExtraTrees vs HistGB compared
-- [ ] Held-out test evaluation (MAE/RMSE/R²) documented
-- [ ] Model + pipeline serialized, exposed via backend endpoint
+- [x] Dataset downloaded/inspected (real inspection, not assumed) — OSSL v1.2 (Safanelli et al. 2025, PLOS ONE), actually downloaded (182MB VisNIR + 16MB lab/site, `ml/scripts/01_download_ossl.py`). Found and documented a real data-quality issue by inspection: ~52% of VisNIR rows are from MIR-only projects (structurally ~100% NaN) — not assumed, discovered via direct per-row NaN-fraction analysis (`ml/scripts/02_build_oc_subset.py`)
+- [x] Target: soil organic carbon (%). Reproducible 12,000-sample subset built from the ~64,180-row qualifying pool (seed=42), spanning 4 real source datasets (LUCAS.SSL, KSSL.SSL, ICRAF.ISRIC, LUCAS.WOODWELL.SSL) — documented memory-constrained subsampling tradeoff, not a scientific shortcut
+- [x] Preprocessing pipeline (train-only fitting, no leakage) — SNV/Savitzky-Golay are row-wise (leak-proof by construction); 5-fold CV comparison on TRAIN ONLY picked SNV+1st-derivative (0.865 CV R²) over raw (0.815); held-out test set touched exactly once, at the end
+- [x] Baseline vs PLS vs RF vs ExtraTrees vs HistGB compared — Dummy R²=-0.099, PLS(30 components) R²=0.817, RandomForest(max_features=1/3 per course, OOB R²=0.907) R²=0.924, ExtraTrees R²=0.930, **HistGradientBoosting R²=0.934 (selected)**
+- [x] Held-out test evaluation (MAE/RMSE/R²) documented — MAE=1.465% OC, RMSE=3.224% OC, R²=0.934, full table + predicted-vs-actual/residual plots in `ml/evaluation/soc-visnir-rf-v1_report.md` + `_diagnostics.png`
+- [x] **Leave-one-dataset-out generalization check** (beyond the base checklist, since a random-split R² alone can mislead): R² ranged from **-0.271 (ICRAF.ISRIC, African soils, worse than the mean!)** to 0.919 (LUCAS.WOODWELL.SSL) depending which source dataset was excluded from training — reported prominently as the report's single most important finding, not buried; this is exactly why no fertilizer calculation in this project consumes an ML-predicted value (Phase 6 only uses manually-entered lab N/P/K)
+- [x] Model + pipeline serialized (`ml/artifacts/soc-visnir-rf-v1.joblib` + `.metadata.json`, committed — small enough to track), exposed via `POST /api/soil/spectra/predict` and `GET /api/soil/spectra/model-info`, which **reject** (not resample) any uploaded spectrum whose wavelength grid doesn't exactly match training (350-2500nm @ 2nm), per the course's own "resolution vs. sampling interval" lesson
+- [x] Verified end-to-end: real backend predictions cross-checked against known lab values (1.53% predicted vs 1.83% actual, 10.21% vs 12.19%, 1.79% vs 1.70%), rejection path tested, and the full flow verified live in the browser via Playwright with zero console errors
+- [x] 8 new pytest cases for model loading/validation (`backend/tests/test_ml_model.py`) — 39 backend tests passing total
 
 ## Phase 6 — Fertilizer Calculations
 - [x] Unit conversion + dosage functions (tested) — `backend/app/services/fertilizer.py`: ha↔acres, N-P2O5-K2O → Urea/DAP/MOP with correct DAP-nitrogen-credit (no double counting), 31 pytest cases covering fertilizer+soil+crop modules, all passing (`backend/tests/`)

@@ -3,6 +3,7 @@ import type { ForecastResponse, GeocodeResult } from '../types/weather'
 import type { DemoProfileSummary, ManualSoilEntry, SoilSample } from '../types/soil'
 import type { CropRecommendationRequest, CropRecommendationResponse } from '../types/crops'
 import type { FertilizerRequest, FertilizerResponse } from '../types/fertilizer'
+import type { SpectralModelInfo, SpectralPredictionResponse } from '../types/ml'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000'
 
@@ -78,4 +79,17 @@ export function recommendCrops(
 
 export function recommendFertilizer(req: FertilizerRequest): Promise<FertilizerResponse> {
   return postJson<FertilizerResponse>('/api/fertilizer/recommend', req)
+}
+
+export function getSpectralModelInfo(): Promise<SpectralModelInfo> {
+  return request<SpectralModelInfo>('/api/soil/spectra/model-info')
+}
+
+export function predictFromSpectra(file: File): Promise<SpectralPredictionResponse> {
+  const formData = new FormData()
+  formData.append('file', file)
+  return request<SpectralPredictionResponse>('/api/soil/spectra/predict', {
+    method: 'POST',
+    body: formData,
+  })
 }
