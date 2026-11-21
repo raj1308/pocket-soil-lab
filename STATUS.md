@@ -65,9 +65,10 @@ Both are currently running in the background from this session (backend :8000, f
 - [x] Verified end-to-end with Playwright (clay-rich demo sample → crop pick → fertilizer dose), zero console errors
 
 ## Phase 7 — Camera Observation
-- [ ] Capture/upload/crop UI
-- [ ] RGB/HSV/histogram analysis
-- [ ] Explicit limitations statement shown (no fake NPK/pH)
+- [x] Capture/upload UI (`capture="environment"` for direct mobile camera access, falls back to file picker on desktop) — third tab on Soil Analysis
+- [x] RGB/HSV/16-bin-per-channel histogram analysis, computed entirely client-side via Canvas `getImageData` (no image ever leaves the device, no backend image-processing dependency risk)
+- [x] Explicit limitations statement always shown first ("a phone photo cannot measure pH, nitrogen, phosphorus or potassium") + brightness-based under/overexposure warnings; output strictly limited to colour/visual statistics, source labeled "image-derived visual observation"
+- [x] Verified end-to-end with Playwright (real uploaded image → real computed RGB/HSV/histogram), zero console errors
 
 ## Phase 8 — Reports & History
 - [x] Saved reports list (all persisted soil samples, demo and manual) + sample-to-sample comparison (select up to 2, renders side-by-side on wider screens)

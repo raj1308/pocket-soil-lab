@@ -8,10 +8,11 @@ import {
 } from '../services/api'
 import { ManualSoilForm } from '../components/ManualSoilForm'
 import { SoilSampleResult } from '../components/SoilSampleResult'
+import { CameraObservation } from '../components/CameraObservation'
 import { saveLastSample } from '../utils/storage'
 import type { DemoProfileSummary, ManualSoilEntry, SoilSample } from '../types/soil'
 
-type Tab = 'demo' | 'manual'
+type Tab = 'demo' | 'manual' | 'camera'
 
 export function Soil() {
   const [tab, setTab] = useState<Tab>('demo')
@@ -80,6 +81,14 @@ export function Soil() {
         >
           Manual entry
         </button>
+        <button
+          onClick={() => setTab('camera')}
+          className={`flex-1 rounded-md py-2 text-sm font-medium ${
+            tab === 'camera' ? 'bg-leaf-600 text-white' : 'border border-soil-100 text-soil-700'
+          }`}
+        >
+          Camera
+        </button>
       </div>
 
       {tab === 'demo' && (
@@ -112,6 +121,8 @@ export function Soil() {
       {tab === 'manual' && (
         <ManualSoilForm onSubmit={handleManualSubmit} submitting={submitting} />
       )}
+
+      {tab === 'camera' && <CameraObservation />}
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 
