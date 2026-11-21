@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.crops import router as crops_router
 from app.api.health import router as health_router
+from app.api.soil import router as soil_router
 from app.api.weather import router as weather_router
 from app.core.config import settings
 from app.database.session import Base, engine
@@ -19,4 +21,6 @@ app.add_middleware(
 )
 
 app.include_router(health_router)
+app.include_router(soil_router)
+app.include_router(crops_router)
 app.include_router(weather_router)

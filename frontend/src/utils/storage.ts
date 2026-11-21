@@ -1,7 +1,9 @@
 import type { ForecastResponse, Location } from '../types/weather'
+import type { SoilSample } from '../types/soil'
 
 const LOCATION_KEY = 'pocket-soil-lab:last-location'
 const FORECAST_KEY = 'pocket-soil-lab:last-forecast'
+const SAMPLE_KEY = 'pocket-soil-lab:last-sample'
 
 export function saveLocation(location: Location): void {
   try {
@@ -32,6 +34,23 @@ export function loadForecastCache(): ForecastResponse | null {
   try {
     const raw = localStorage.getItem(FORECAST_KEY)
     return raw ? (JSON.parse(raw) as ForecastResponse) : null
+  } catch {
+    return null
+  }
+}
+
+export function saveLastSample(sample: SoilSample): void {
+  try {
+    localStorage.setItem(SAMPLE_KEY, JSON.stringify(sample))
+  } catch {
+    // ignore
+  }
+}
+
+export function loadLastSample(): SoilSample | null {
+  try {
+    const raw = localStorage.getItem(SAMPLE_KEY)
+    return raw ? (JSON.parse(raw) as SoilSample) : null
   } catch {
     return null
   }

@@ -37,14 +37,18 @@ Both are currently running in the background from this session (backend :8000, f
 - [x] Verified end-to-end in a real headless browser (Playwright): searched "Kharagpur", selected a result, confirmed real temperature/advisories render with zero console errors; caught and fixed a clipped-Y-axis chart bug this way before calling it done
 
 ## Phase 3 — Soil Data Workflow
-- [ ] Manual entry form + validation
-- [ ] Demo sample profiles (labeled "not a real-time measurement")
-- [ ] Persistence to DB with provenance fields
+- [x] Manual entry form + validation (pH 0-14 hard range + 3-10 soft warning, texture sum ±5% check, non-negative nutrients) — `backend/app/services/soil.py`
+- [x] Demo sample profiles (sandy/clay-rich/loamy/acidic/organic-carbon-poor), each labeled "Sample dataset — not a real-time soil measurement", internally consistent with real soil-science relationships (acid→low available P, low OC→low N, clay→higher K) — `backend/app/services/demo_soil_profiles.py`
+- [x] USDA 12-class texture triangle classifier, boundaries sourced from NRCS Soil Survey Manual (2017) Ch.3, verified against known demo values
+- [x] Persistence to SQLite with per-measurement provenance (property/value/unit/method/source_type/reliability) — `SoilSample`/`SoilMeasurement` models
+- [x] Verified end-to-end with Playwright: demo load → texture classification → measurement table with real method names (Olsen's, Walkley-Black, etc.) all render correctly
 
 ## Phase 4 — Crop Recommendation Engine
-- [ ] Crop knowledge base (8–12 crops, sourced ranges)
-- [ ] Rule-based weighted suitability scoring
-- [ ] Explanation output per crop
+- [x] Crop knowledge base (10 crops: rice, wheat, maize, potato, mustard, groundnut, chickpea, pigeon pea, green gram, soybean) with texture/pH/temp/rainfall/duration/water-need ranges — `backend/app/services/crop_catalog.py`, weights kept as plain configurable data
+- [x] Rule-based weighted suitability scoring (texture/pH/organic-carbon/season-climate components, missing components excluded and weights renormalized rather than guessed) — `backend/app/services/crop_recommendation.py`
+- [x] Explanation output per crop: reasons, limiting factors, confidence (high/medium/low based on how many inputs were available), data limitations — confidence kept explicitly separate from the suitability score per the master spec
+- [x] 7-day forecast never substituted for season climate — climate inputs are either omitted or explicit user-supplied regional estimates, UI says so directly
+- [x] Verified end-to-end with Playwright: soil sample → crop recommendations, zero console errors, scores/reasons/limiting-factors all traceable to the actual inputs
 
 ## Phase 5 — Soil ML Model
 - [ ] Dataset downloaded/inspected (real inspection, not assumed)
