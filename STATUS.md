@@ -74,9 +74,11 @@ Both are currently running in the background from this session (backend :8000, f
 - [ ] PDF export
 
 ## Phase 9 — PWA & Deployment
-- [ ] Manifest, service worker, installability
-- [ ] Offline fallback
-- [ ] Hosting chosen and verified (free tier)
+- [x] Manifest (hand-written `public/manifest.json`), hand-drawn SVG icon rendered to PNG (192/512/apple-touch) via `rsvg-convert`
+- [x] Service worker via `vite-plugin-pwa` (generateSW) — precaches app shell only, deliberately never caches `/api/*` responses (the app already has its own visibly-labeled offline cache for weather/soil data; a silent SW cache would undermine that labeling)
+- [x] Offline fallback page (`public/offline.html`)
+- [x] Verified with Playwright against a real production preview build: service worker reaches `active` state, manifest linked correctly, icons/sw.js/manifest all serve 200
+- [ ] Hosting chosen and verified (free tier) — not yet deployed anywhere; still local-only
 
 ## Phase 10 — Testing & Presentation
 - [ ] pytest suite for backend/ML/fertilizer logic
